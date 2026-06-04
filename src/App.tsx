@@ -1,25 +1,26 @@
-import { useState } from 'react'
-import type { Expense } from './types/expense'
-import ExpenseForm from './components/ExpenseForm'
-import ExpenseList from './components/ExpenseList'
-import './App.css'
+import ExpenseForm from "./components/ExpenseForm";
+import ExpenseList from "./components/ExpenseList";
+import "./App.css";
+import { useExpense } from "./hooks/useExpense";
 
 function App() {
-  const [expenses] = useState<Expense[]>([])
-
   // TODO: add handleAddExpense and handleDeleteExpense
+  const { expenses, handleAddExpense, handleDeleteExpense } = useExpense();
 
   return (
     <div className="app-layout">
       <aside>
         <h1>Expense Manager</h1>
-        <ExpenseForm />
+        <ExpenseForm onAddExpense={handleAddExpense} />
       </aside>
       <main>
-        <ExpenseList expenses={expenses} />
+        <ExpenseList
+          expenses={expenses}
+          onDeleteExpense={handleDeleteExpense}
+        />
       </main>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

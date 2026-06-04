@@ -1,9 +1,30 @@
-import { CATEGORIES } from '../constants'
+import { useState } from "react";
+import { CATEGORIES } from "../constants";
+import type { Expense } from "../types/expense";
 
-function ExpenseForm() {
+interface ExpenseFormProps {
+  onAddExpense: (expense: Expense) => void;
+}
+
+function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     // TODO: create a new expense and add it to the list
+    const newExpense: Expense = {
+      id: crypto.randomUUID(),
+      description: name,
+      amount: parseFloat(amount),
+      category,
+      date: new Date().toLocaleDateString(),
+    };
+    onAddExpense(newExpense);
+    setName("");
+    setAmount("");
+    setCategory("");
   }
 
   return (
@@ -13,6 +34,8 @@ function ExpenseForm() {
         Name
         <input
           name="description"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Lunch"
           required
         />
@@ -21,6 +44,8 @@ function ExpenseForm() {
         Amount ($)
         <input
           name="amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
           type="number"
           placeholder="0.00"
           min={0}
@@ -30,16 +55,23 @@ function ExpenseForm() {
       </label>
       <label>
         Category
-        <select name="category" required>
+        <select
+          name="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          required
+        >
           <option value="">Select category</option>
-          {CATEGORIES.map(c => (
-            <option key={c} value={c}>{c}</option>
+          {CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
       </label>
       <button type="submit">Add Expense</button>
     </form>
-  )
+  );
 }
 
-export default ExpenseForm
+export default ExpenseForm;
