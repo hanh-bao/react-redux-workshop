@@ -1,28 +1,28 @@
-import { useState } from 'react'
-import { CATEGORIES } from '../constants'
-import type { Expense } from '../types/expense'
+import { useState } from "react";
+import { CATEGORIES } from "../constants";
+import type { Expense } from "../types/expense";
 
 interface ExpenseFormProps {
-  onAddExpense: (expense: Omit<Expense, 'id'>) => void
+  onAddExpense: (expense: Omit<Expense, "id">) => void;
 }
 
 function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
-  const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState('')
-  const [category, setCategory] = useState('')
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!description || !amount || !category) return
+    e.preventDefault();
+    if (!description || !amount || !category) return;
     onAddExpense({
       description,
       amount: parseFloat(amount),
       category,
-      date: new Date().toISOString().split('T')[0],
-    })
-    setDescription('')
-    setAmount('')
-    setCategory('')
+      date: new Date().toISOString().split("T")[0],
+    });
+    setDescription("");
+    setAmount("");
+    setCategory("");
   }
 
   return (
@@ -32,7 +32,7 @@ function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
         Name
         <input
           value={description}
-          onChange={e => setDescription(e.target.value)}
+          onChange={(e) => setDescription(e.target.value)}
           placeholder="e.g. Lunch"
           required
         />
@@ -41,7 +41,7 @@ function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
         Amount ($)
         <input
           value={amount}
-          onChange={e => setAmount(e.target.value)}
+          onChange={(e) => setAmount(e.target.value)}
           type="number"
           placeholder="0.00"
           min={0}
@@ -51,16 +51,22 @@ function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
       </label>
       <label>
         Category
-        <select value={category} onChange={e => setCategory(e.target.value)} required>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          required
+        >
           <option value="">Select category</option>
-          {CATEGORIES.map(c => (
-            <option key={c} value={c}>{c}</option>
+          {CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
       </label>
       <button type="submit">Add Expense</button>
     </form>
-  )
+  );
 }
 
-export default ExpenseForm
+export default ExpenseForm;
