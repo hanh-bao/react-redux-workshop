@@ -1,18 +1,28 @@
-import { useSelector } from 'react-redux'
-import type { RootState } from '../store'
-import { useExpenseFilter } from '../hooks/useExpenseFilter'
-import ExpenseItem from './ExpenseItem'
-import ExpenseSummary from './ExpenseSummary'
+import { useSelector } from "react-redux";
+import type { RootState } from "../store";
+import { useExpenseFilter } from "../hooks/useExpenseFilter";
+import ExpenseItem from "./ExpenseItem";
+import ExpenseSummary from "./ExpenseSummary";
 
 interface ExpenseListProps {
-  query: string
+  query: string;
 }
 
 function ExpenseList({ query }: ExpenseListProps) {
-  const expenses = useSelector((state: RootState) => state.expenses.items)
+  const expenses = useSelector((state: RootState) => state.expenses.items);
+  const activeCategory = useSelector(
+    (state: RootState) => state.filters.category,
+  );
   // TODO: Get activeCategory from state.filters.category
   // TODO: Filter expenses by activeCategory before passing to useExpenseFilter
-  const { filteredExpenses, total } = useExpenseFilter(expenses, query)
+  const categoryFilteredExpenses = activeCategory
+    ? expenses.filter((expense) => expense.category === activeCategory)
+    : expenses;
+
+  const { filteredExpenses, total } = useExpenseFilter(
+    categoryFilteredExpenses,
+    query,
+  );
 
   return (
     <div className="expense-list">
@@ -22,16 +32,13 @@ function ExpenseList({ query }: ExpenseListProps) {
         <p className="empty-state">No expenses yet.</p>
       ) : (
         <ul>
-          {filteredExpenses.map(expense => (
-            <ExpenseItem
-              key={expense.id}
-              expense={expense}
-            />
+          {filteredExpenses.map((expense) => (
+            <ExpenseItem key={expense.id} expense={expense} />
           ))}
         </ul>
       )}
     </div>
-  )
+  );
 }
 
-export default ExpenseList
+export default ExpenseList;

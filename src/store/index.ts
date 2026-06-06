@@ -1,37 +1,66 @@
-import { createStore, compose, type Reducer } from 'redux'
-import { expensesReducer } from './expenses/reducer'
-import type { ExpensesState } from './expenses/reducer'
-import { STORAGE_KEY } from '../constants'
-import type { ExpenseAction } from './expenses/actions'
+import { createStore, compose, type Reducer } from "redux";
+import { expensesReducer } from "./expenses/reducer";
+import type { ExpensesState } from "./expenses/reducer";
+import { STORAGE_KEY } from "../constants";
+import type { ExpenseAction } from "./expenses/actions";
 
 // TODO: Import filtersReducer from './filters/reducer'
+import {
+  filtersReducer,
+  type FiltersAction,
+  type FiltersState,
+} from "./filters/reducer";
 
-const rootReducer: Reducer<RootState, ExpenseAction> = (state = { expenses: { items: [], editingExpenseId: null } }, action) => ({
-  expenses: expensesReducer(state.expenses, action),
+type AppAction = ExpenseAction | FiltersAction;
+
+const rootReducer: Reducer<RootState, AppAction> = (
+  state = {
+    expenses: { items: [], editingExpenseId: null },
+    filters: { category: null },
+  },
+  action,
+) => ({
+  expenses: expensesReducer(state.expenses, action as ExpenseAction),
   // TODO: Add filters: filtersReducer(state.filters, action)
-})
+  filters: filtersReducer(state.filters, action as FiltersAction),
+});
 
 export interface RootState {
-  expenses: ExpensesState
+  expenses: ExpensesState;
   // TODO: Add filters: FiltersState
+  filters: FiltersState;
 }
 
 function loadState(): RootState {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    return { expenses: saved ? { items: JSON.parse(saved) as never[], editingExpenseId: null } : { items: [], editingExpenseId: null } }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return {
+      expenses: saved
+        ? { items: JSON.parse(saved) as never[], editingExpenseId: null }
+        : { items: [], editingExpenseId: null },
+      filters: { category: null },
+    };
   } catch {
-    return { expenses: { items: [], editingExpenseId: null } }
+    return {
+      expenses: { items: [], editingExpenseId: null },
+      filters: { category: null },
+    };
   }
 }
 
 const composeEnhancers =
-  (typeof window !== 'undefined' && (window as { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose }).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
+  (typeof window !== "undefined" &&
+    (window as { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose })
+      .__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
 
-export const store = createStore(rootReducer, loadState(), composeEnhancers())
+export const store = createStore(rootReducer, loadState(), composeEnhancers());
 
 store.subscribe(() => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(store.getState().expenses.items))
-})
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(store.getState().expenses.items),
+  );
+});
 
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch;
