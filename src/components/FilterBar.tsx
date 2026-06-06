@@ -1,32 +1,34 @@
-import { useSelector, useDispatch } from 'react-redux'
-import type { RootState } from '../store'
-import { setFilter, clearFilters } from '../store/filters/actions'
-import { CATEGORIES } from '../constants'
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../store";
+import { setFilter, clearFilters } from "../store/slices/filtersSlice";
+import { CATEGORIES } from "../constants";
 
 function FilterBar() {
-  const dispatch = useDispatch()
-  const activeCategory = useSelector((state: RootState) => state.filters.category)
+  const dispatch = useDispatch();
+  const activeCategory = useSelector(
+    (state: RootState) => state.filters.category,
+  );
 
   function handleCategoryClick(category: string) {
     if (category === activeCategory) {
-      dispatch(clearFilters())
+      dispatch(clearFilters());
     } else {
-      dispatch(setFilter(category))
+      dispatch(setFilter(category));
     }
   }
 
   function handleClear() {
-    dispatch(clearFilters())
+    dispatch(clearFilters());
   }
 
   return (
     <div className="filter-bar">
       <span className="filter-bar-label">Filter by category:</span>
       <div className="filter-bar-chips">
-        {CATEGORIES.map(category => (
+        {CATEGORIES.map((category) => (
           <button
             key={category}
-            className={`filter-chip${activeCategory === category ? ' active' : ''}`}
+            className={`filter-chip${activeCategory === category ? " active" : ""}`}
             onClick={() => handleCategoryClick(category)}
           >
             {category}
@@ -39,7 +41,7 @@ function FilterBar() {
         </button>
       )}
     </div>
-  )
+  );
 }
 
-export default FilterBar
+export default FilterBar;
